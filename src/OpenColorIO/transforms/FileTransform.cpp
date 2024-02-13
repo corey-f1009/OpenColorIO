@@ -522,22 +522,39 @@ const char * FormatRegistry::getFormatExtensionByIndex(int capability, int index
     return "";
 }
 
-bool FormatRegistry::IsFormatExtensionSupported(const char* ext)
+bool FormatRegistry::isFormatExtensionSupported(const char* ext)
 {
-    if (ext[0] == '.') 
-    {
+    // Ignore a leading dot, if present
+    if (ext[0] == '.') {
         ext++;
     }
-    const int numFormats = FormatRegistry::GetInstance().getNumFormats(FORMAT_CAPABILITY_READ);
-    for (int i = 0; i < numFormats; ++i) 
-    {
-        const char* formatExt = FormatRegistry::GetInstance().getFormatExtensionByIndex(FORMAT_CAPABILITY_READ, i);
-        if (strcmp(formatExt, ext) == 0) 
-        {
-            return true;
+
+    // Check if the extension is supported for reading, baking, or writing
+    const int numReadFormats = GetInstance().getNumFormats(FORMAT_CAPABILITY_READ);
+    for (int i = 0; i < numReadFormats; ++i) {
+        const char* formatExt = GetInstance().getFormatExtensionByIndex(FORMAT_CAPABILITY_READ, i);
+        if (strcmp(formatExt, ext) == 0) {
+            return true; // Extension is supported for reading
         }
     }
-    return false; 
+
+    const int numBakeFormats = GetInstance().getNumFormats(FORMAT_CAPABILITY_BAKE);
+    for (int i = 0; i < numBakeFormats; ++i) {
+        const char* formatExt = GetInstance().getFormatExtensionByIndex(FORMAT_CAPABILITY_BAKE, i);
+        if (strcmp(formatExt, ext) == 0) {
+            return true; // Extension is supported for baking
+        }
+    }
+
+    const int numWriteFormats = GetInstance().getNumFormats(FORMAT_CAPABILITY_WRITE);
+    for (int i = 0; i < numWriteFormats; ++i) {
+        const char* formatExt = GetInstance().getFormatExtensionByIndex(FORMAT_CAPABILITY_WRITE, i);
+        if (strcmp(formatExt, ext) == 0) {
+            return true; // Extension is supported for writing
+        }
+    }
+
+    return false; // Extension is not supported
 }
 
 ///////////////////////////////////////////////////////////////////////////
