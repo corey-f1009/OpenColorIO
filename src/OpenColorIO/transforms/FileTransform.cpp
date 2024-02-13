@@ -522,6 +522,24 @@ const char * FormatRegistry::getFormatExtensionByIndex(int capability, int index
     return "";
 }
 
+bool FormatRegistry::IsFormatExtensionSupported(const char* ext)
+{
+    if (ext[0] == '.') 
+    {
+        ext++;
+    }
+    const int numFormats = FormatRegistry::GetInstance().getNumFormats(FORMAT_CAPABILITY_READ);
+    for (int i = 0; i < numFormats; ++i) 
+    {
+        const char* formatExt = FormatRegistry::GetInstance().getFormatExtensionByIndex(FORMAT_CAPABILITY_READ, i);
+        if (strcmp(formatExt, ext) == 0) 
+        {
+            return true;
+        }
+    }
+    return false; 
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 FileFormat::~FileFormat()
